@@ -7,6 +7,7 @@ import {
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
+import Stats from 'three/addons/libs/stats.module.js'
 
 export default class LogicMap {
   // 创建场景
@@ -22,7 +23,10 @@ export default class LogicMap {
   controls = new OrbitControls(this.camera, this.renderer.domElement)
   // 创建辅助坐标系
   axesHelper = new AxesHelper(150)
+  // 创建 GUI 面板
   gui = new GUI()
+  // 创建性能监视器
+  stats = new Stats()
 
   controller = reactive({
     scale: [0, 1, 2, 3],
@@ -38,6 +42,7 @@ export default class LogicMap {
     this.render = this.render.bind(this) // 绑定 this
 
     this.gui.add(this.controller, 'rander').name('渲染')
+    document.body.appendChild(this.stats.dom) // 添加性能监视器
 
     watchEffect(() => {
       if (this.controller.rander)
@@ -138,8 +143,8 @@ export default class LogicMap {
     if (!this.controller.rander)
       return
 
-    requestAnimationFrame(this.render)
-
-    this.renderer.render(this.scene, this.camera)
+    this.stats.update() // 刷新性能监视器时间
+    requestAnimationFrame(this.render) // 请求再次执行渲染函数 render，渲染下一帧
+    this.renderer.render(this.scene, this.camera) // 渲染器执行渲染操作
   }
 }
