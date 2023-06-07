@@ -61,6 +61,11 @@ export default class LogicMap {
     const sphere = new Mesh(geometry, material) // 创建网格
     sphere.position.x = 2
     this.scene.add(sphere)
+
+    setInterval(() => {
+      sphere.rotation.x += 0.01
+      sphere.rotation.y += 0.01
+    }, 1000 / 60)
   }
 
   /**
