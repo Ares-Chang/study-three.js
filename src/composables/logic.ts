@@ -1,9 +1,10 @@
 import {
   AxesHelper,
   BoxGeometry,
+  BufferAttribute, BufferGeometry,
   Mesh, MeshBasicMaterial,
-  PerspectiveCamera, Scene,
-  SphereGeometry, WebGLRenderer,
+  PerspectiveCamera, Points, PointsMaterial,
+  Scene, SphereGeometry, WebGLRenderer,
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
@@ -62,6 +63,7 @@ export default class LogicMap {
 
     const cube = this.addBox()
     const sphere = this.addSphere()
+    this.addPoint()
 
     setInterval(() => {
       cube.rotateX(0.01)
@@ -69,6 +71,32 @@ export default class LogicMap {
       sphere.rotateX(0.01)
       sphere.rotateY(0.01)
     }, 1000 / 60)
+  }
+
+  addPoint() {
+    const geometry = new BufferGeometry()
+    // 类型化数组创建顶点数据
+    const vertices = new Float32Array([
+      0, 0, 0, // 顶点 1 坐标
+      5, 0, 0, // 顶点 2 坐标
+      0, 10, 0, // 顶点 3 坐标
+      0, 0, 1, // 顶点 4 坐标
+      0, 0, 10, // 顶点 5 坐标
+      5, 0, 1, // 顶点 6 坐标
+    ])
+    // 创建属性缓冲区对象
+    // 3个为一组，表示一个顶点的xyz坐标
+    const attribue = new BufferAttribute(vertices, 3)
+    // 设置几何体attributes属性的位置属性
+    geometry.attributes.position = attribue
+    const material = new PointsMaterial({
+      color: 0xFFFF00,
+      size: 0.3, // 点对象像素尺寸
+    })
+    const points = new Points(geometry, material) // 点模型对象
+
+    this.scene.add(points)
+    return points
   }
 
   addBox() {
