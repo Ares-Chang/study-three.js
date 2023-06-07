@@ -24,8 +24,25 @@ export default class LogicMap {
   axesHelper = new AxesHelper(150)
   gui = new GUI()
 
+  controller = reactive({
+    scale: [0, 1, 2, 3],
+    direction: {
+      left: -1,
+      center: 0,
+      right: 1,
+    },
+    rander: true,
+  })
+
   constructor() {
     this.render = this.render.bind(this) // 绑定 this
+
+    this.gui.add(this.controller, 'rander').name('渲染')
+
+    watchEffect(() => {
+      if (this.controller.rander)
+        this.render() // 执行渲染函数
+    })
   }
 
   initThree(dom: HTMLElement) {
@@ -35,12 +52,18 @@ export default class LogicMap {
     dom.appendChild(this.renderer.domElement) // 将画布添加到指定元素中
 
     window.onresize = this.onresize.bind(this) // 监听屏幕变化
-    this.render() // 执行渲染函数
 
     this.scene.add(this.axesHelper) // 添加辅助坐标系
 
-    this.addBox()
-    this.addSphere()
+    const cube = this.addBox()
+    const sphere = this.addSphere()
+
+    setInterval(() => {
+      cube.rotateX(0.01)
+      cube.rotateY(0.01)
+      sphere.rotateX(0.01)
+      sphere.rotateY(0.01)
+    }, 1000 / 60)
   }
 
   addBox() {
@@ -48,15 +71,25 @@ export default class LogicMap {
     const material = new MeshBasicMaterial({ color: 0x00FF00 }) // 添加材质
     const cube = new Mesh(geometry, material) // 创建网格
     this.scene.add(cube)
-    this.gui.add(cube.position, 'x', -3, 3, 0.01).name('几何体 X 轴')
-    this.gui.add(cube.position, 'y', -3, 3, 0.01).name('几何体 Y 轴')
+
+    const gui = this.gui.addFolder('几何体')
+    gui.add(cube.position, 'x', -3, 3, 0.01).name('X 轴')
+    gui.add({ scale: 0 }, 'scale', this.controller.scale)
+      .name('Y 轴')
+      .onChange((value: number) => cube.position.setY(value))
+    gui.add({ direction: 'center' }, 'direction', this.controller.direction)
+      .name('方向选择')
+      .onChange((value: number) => cube.position.setX(value))
+    gui.addColor({ color: 0x00FF00 }, 'color')
+      .name('颜色')
+      .onChange((value: number) => {
+        // 更新球体颜色
+        cube.material.color.set(value)
+      })
 
     this.camera.position.z = 5
 
-    setInterval(() => {
-      cube.rotation.x += 0.01
-      cube.rotation.y += 0.01
-    }, 1000 / 60)
+    return cube
   }
 
   addSphere() {
@@ -65,19 +98,23 @@ export default class LogicMap {
     const sphere = new Mesh(geometry, material) // 创建网格
     sphere.position.x = 2
     this.scene.add(sphere)
-    this.gui.add(sphere.position, 'x', -3, 3, 0.01).name('球体 X 轴')
-    this.gui.add(sphere.position, 'y', -3, 3, 0.01).name('球体 Y 轴')
-    this.gui.addColor({ color: 0xFF0000 }, 'color')
-      .name('球体颜色')
+
+    const gui = this.gui.addFolder('球体')
+    gui.add(sphere.position, 'x', -3, 3, 0.01).name('X 轴')
+    gui.add({ scale: 0 }, 'scale', this.controller.scale)
+      .name('Y 轴')
+      .onChange((value: number) => sphere.position.setY(value))
+    gui.add({ direction: 'right' }, 'direction', this.controller.direction)
+      .name('方向选择')
+      .onChange((value: number) => sphere.position.setX(value))
+    gui.addColor({ color: 0xFF0000 }, 'color')
+      .name('颜色')
       .onChange((value: number) => {
         // 更新球体颜色
         sphere.material.color.set(value)
       })
 
-    setInterval(() => {
-      sphere.rotation.x += 0.01
-      sphere.rotation.y += 0.01
-    }, 1000 / 60)
+    return sphere
   }
 
   /**
@@ -98,6 +135,9 @@ export default class LogicMap {
    * 渲染函数，每帧执行
    */
   render() {
+    if (!this.controller.rander)
+      return
+
     requestAnimationFrame(this.render)
 
     this.renderer.render(this.scene, this.camera)
