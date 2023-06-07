@@ -151,7 +151,10 @@ export default class LogicMap {
 
   addBox() {
     const geometry = new BoxGeometry(1, 1, 1) // 创建几何体
-    const material = new MeshBasicMaterial({ color: 0x00FF00 }) // 添加材质
+    const material = new MeshBasicMaterial({
+      color: 0x00FF00,
+      wireframe: true, // 显示线条模式
+    }) // 添加材质
     const cube = new Mesh(geometry, material) // 创建网格
     this.scene.add(cube)
 
