@@ -1,7 +1,9 @@
 import {
-  AxesHelper, BoxGeometry, Mesh,
-  MeshBasicMaterial, PerspectiveCamera,
-  Scene, WebGLRenderer,
+  AxesHelper,
+  BoxGeometry,
+  Mesh, MeshBasicMaterial,
+  PerspectiveCamera, Scene,
+  SphereGeometry, WebGLRenderer,
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
@@ -33,6 +35,7 @@ export default class LogicMap {
     this.scene.add(this.axesHelper) // 添加辅助坐标系
 
     this.addBox()
+    this.addSphere()
   }
 
   addBox() {
@@ -47,6 +50,14 @@ export default class LogicMap {
       cube.rotation.x += 0.01
       cube.rotation.y += 0.01
     }, 1000 / 60)
+  }
+
+  addSphere() {
+    const geometry = new SphereGeometry(1, 32, 32) // 创建几何体
+    const material = new MeshBasicMaterial({ color: 0xFF0000 }) // 添加材质
+    const sphere = new Mesh(geometry, material) // 创建网格
+    sphere.position.x = 2
+    this.scene.add(sphere)
   }
 
   // 渲染函数
