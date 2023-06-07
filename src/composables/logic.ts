@@ -6,6 +6,7 @@ import {
   SphereGeometry, WebGLRenderer,
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 
 export default class LogicMap {
   // 创建场景
@@ -21,6 +22,7 @@ export default class LogicMap {
   controls = new OrbitControls(this.camera, this.renderer.domElement)
   // 创建辅助坐标系
   axesHelper = new AxesHelper(150)
+  gui = new GUI()
 
   constructor() {
     this.render = this.render.bind(this) // 绑定 this
@@ -46,6 +48,8 @@ export default class LogicMap {
     const material = new MeshBasicMaterial({ color: 0x00FF00 }) // 添加材质
     const cube = new Mesh(geometry, material) // 创建网格
     this.scene.add(cube)
+    this.gui.add(cube.position, 'x', -3, 3, 0.01).name('几何体 X 轴')
+    this.gui.add(cube.position, 'y', -3, 3, 0.01).name('几何体 Y 轴')
 
     this.camera.position.z = 5
 
@@ -61,6 +65,14 @@ export default class LogicMap {
     const sphere = new Mesh(geometry, material) // 创建网格
     sphere.position.x = 2
     this.scene.add(sphere)
+    this.gui.add(sphere.position, 'x', -3, 3, 0.01).name('球体 X 轴')
+    this.gui.add(sphere.position, 'y', -3, 3, 0.01).name('球体 Y 轴')
+    this.gui.addColor({ color: 0xFF0000 }, 'color')
+      .name('球体颜色')
+      .onChange((value: number) => {
+        // 更新球体颜色
+        sphere.material.color.set(value)
+      })
 
     setInterval(() => {
       sphere.rotation.x += 0.01
