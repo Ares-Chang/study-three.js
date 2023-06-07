@@ -1,4 +1,8 @@
-import { BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
+import {
+  AxesHelper, BoxGeometry, Mesh,
+  MeshBasicMaterial, PerspectiveCamera,
+  Scene, WebGLRenderer,
+} from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 export default class LogicMap {
@@ -13,6 +17,8 @@ export default class LogicMap {
 
   // 设置相机控件轨道控制器 OrbitControls
   controls = new OrbitControls(this.camera, this.renderer.domElement)
+  // 创建辅助坐标系
+  axesHelper = new AxesHelper(150)
 
   constructor() {
     this.render = this.render.bind(this) // 绑定 this
@@ -23,6 +29,8 @@ export default class LogicMap {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     dom.appendChild(this.renderer.domElement)
     this.render()
+
+    this.scene.add(this.axesHelper) // 添加辅助坐标系
 
     this.addBox()
   }
