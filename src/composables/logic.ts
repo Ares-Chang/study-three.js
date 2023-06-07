@@ -1,7 +1,7 @@
 import {
   AxesHelper,
   BoxGeometry,
-  BufferAttribute, BufferGeometry,
+  BufferAttribute, BufferGeometry, DoubleSide,
   Line, LineBasicMaterial, Mesh, MeshBasicMaterial,
   PerspectiveCamera, Points, PointsMaterial,
   Scene, SphereGeometry, WebGLRenderer,
@@ -65,6 +65,7 @@ export default class LogicMap {
     const sphere = this.addSphere()
     this.addPoint()
     this.addLine()
+    this.addRectangle()
 
     setInterval(() => {
       cube.rotateX(0.01)
@@ -72,6 +73,30 @@ export default class LogicMap {
       sphere.rotateX(0.01)
       sphere.rotateY(0.01)
     }, 1000 / 60)
+  }
+
+  addRectangle() {
+    const geometry = new BufferGeometry()
+    const vertices = new Float32Array([
+      0, 20, 0, // 顶点 1 坐标
+      100, 20, 0, // 顶点 2 坐标
+      100, 100, 0, // 顶点 3 坐标
+
+      0, 20, 0, // 顶点 4 坐标
+      100, 100, 0, // 顶点 5 坐标
+      0, 100, 0, // 顶点 6 坐标
+    ])
+
+    const attribue = new BufferAttribute(vertices, 3)
+    geometry.attributes.position = attribue
+
+    const material = new MeshBasicMaterial({
+      color: 0x00FF00,
+      side: DoubleSide, // 双面可见，默认反面可见
+    })
+
+    const mesh = new Mesh(geometry, material)
+    this.scene.add(mesh)
   }
 
   addLine() {
