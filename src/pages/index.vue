@@ -1,46 +1,38 @@
-<script setup lang="ts" generic="T extends any, O extends any">
-defineOptions({
-  name: 'IndexPage',
-})
+<script setup lang="ts">
+import { BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 
-const name = ref('')
+const map = ref()
 
-const router = useRouter()
-function go() {
-  if (name.value)
-    router.push(`/hi/${encodeURIComponent(name.value)}`)
+const scene = new Scene()
+const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+
+const renderer = new WebGLRenderer()
+renderer.setSize(window.innerWidth, window.innerHeight)
+document.body.appendChild(renderer.domElement)
+
+const geometry = new BoxGeometry(1, 1, 1)
+const material = new MeshBasicMaterial({ color: 0x00FF00 })
+const cube = new Mesh(geometry, material)
+scene.add(cube)
+
+camera.position.z = 5
+
+function animate() {
+  requestAnimationFrame(animate)
+
+  cube.rotation.x += 0.01
+  cube.rotation.y += 0.01
+
+  renderer.render(scene, camera)
 }
+
+animate()
+
+onMounted(() => {
+  map.value.appendChild(renderer.domElement)
+})
 </script>
 
 <template>
-  <div>
-    <div i-carbon-campsite inline-block text-4xl />
-    <p>
-      <a rel="noreferrer" href="https://github.com/antfu/vitesse-lite" target="_blank">
-        Vitesse Lite
-      </a>
-    </p>
-    <p>
-      <em text-sm op75>Opinionated Vite Starter Template</em>
-    </p>
-
-    <div py-4 />
-
-    <TheInput
-      v-model="name"
-      placeholder="What's your name?"
-      autocomplete="false"
-      @keydown.enter="go"
-    />
-
-    <div>
-      <button
-        class="m-3 text-sm btn"
-        :disabled="!name"
-        @click="go"
-      >
-        Go
-      </button>
-    </div>
-  </div>
+  <div ref="map" h-screen w-screen overflow-hidden />
 </template>
