@@ -2,7 +2,7 @@ import {
   AxesHelper,
   BoxGeometry,
   BufferAttribute, BufferGeometry,
-  Mesh, MeshBasicMaterial,
+  Line, LineBasicMaterial, Mesh, MeshBasicMaterial,
   PerspectiveCamera, Points, PointsMaterial,
   Scene, SphereGeometry, WebGLRenderer,
 } from 'three'
@@ -64,6 +64,7 @@ export default class LogicMap {
     const cube = this.addBox()
     const sphere = this.addSphere()
     this.addPoint()
+    this.addLine()
 
     setInterval(() => {
       cube.rotateX(0.01)
@@ -71,6 +72,31 @@ export default class LogicMap {
       sphere.rotateX(0.01)
       sphere.rotateY(0.01)
     }, 1000 / 60)
+  }
+
+  addLine() {
+    const geometry = new BufferGeometry()
+    // 类型化数组创建顶点数据
+    const vertices = new Float32Array([
+      0, 0, 0, // 顶点 1 坐标
+      5, 0, 0, // 顶点 2 坐标
+      0, 10, 0, // 顶点 3 坐标
+      0, 0, 1, // 顶点 4 坐标
+      0, 0, 10, // 顶点 5 坐标
+      5, 0, 1, // 顶点 6 坐标
+    ])
+    // 创建属性缓冲区对象
+    const attribue = new BufferAttribute(vertices, 3)
+    // 设置几何体 attributes 属性的位置属性
+    geometry.attributes.position = attribue
+    const material = new LineBasicMaterial({
+      color: 0xFBFF00,
+    })
+    // 创建线模型对象
+    const line = new Line(geometry, material)
+    // const line = new LineLoop(geometry, material) // 闭合线条
+
+    this.scene.add(line) // 线条对象添加到场景中
   }
 
   addPoint() {
@@ -85,9 +111,8 @@ export default class LogicMap {
       5, 0, 1, // 顶点 6 坐标
     ])
     // 创建属性缓冲区对象
-    // 3个为一组，表示一个顶点的xyz坐标
     const attribue = new BufferAttribute(vertices, 3)
-    // 设置几何体attributes属性的位置属性
+    // 设置几何体 attributes 属性的位置属性
     geometry.attributes.position = attribue
     const material = new PointsMaterial({
       color: 0xFFFF00,
