@@ -28,9 +28,12 @@ export default class LogicMap {
 
   initThree(dom: HTMLElement) {
     this.renderer.setPixelRatio(window.devicePixelRatio) // 设置设备像素比，以免渲染模糊问题
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-    dom.appendChild(this.renderer.domElement)
-    this.render()
+    this.renderer.setSize(window.innerWidth, window.innerHeight) // 设置渲染器输出画布大小
+
+    dom.appendChild(this.renderer.domElement) // 将画布添加到指定元素中
+
+    window.onresize = this.onresize.bind(this) // 监听屏幕变化
+    this.render() // 执行渲染函数
 
     this.scene.add(this.axesHelper) // 添加辅助坐标系
 
@@ -60,7 +63,23 @@ export default class LogicMap {
     this.scene.add(sphere)
   }
 
-  // 渲染函数
+  /**
+   * 屏幕大小改变后，自动改变渲染器大小
+   */
+  onresize() {
+    // 重置渲染器输出画布 canvas 尺寸
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    // 全屏情况下：设置观察范围长宽比 aspect 为窗口宽高比
+    this.camera.aspect = window.innerWidth / window.innerHeight
+    // 渲染器执行 render 方法的时候会读取相机对象的投影矩阵属性 projectionMatrix
+    // 但是不会每渲染一帧，就通过相机的属性计算投影矩阵(节约计算资源)
+    // 如果相机的一些属性发生了变化，需要执行 updateProjectionMatrix() 方法更新相机的投影矩阵
+    this.camera.updateProjectionMatrix()
+  }
+
+  /**
+   * 渲染函数，每帧执行
+   */
   render() {
     requestAnimationFrame(this.render)
 
