@@ -32,6 +32,10 @@ const list = [
     name: '透明贴图',
     path: '/transparencyTextureBox',
   },
+  {
+    name: 'UV 动画',
+    path: '/uvAnimation',
+  },
 ]
 </script>
 
