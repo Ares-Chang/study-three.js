@@ -17,6 +17,10 @@ const list = [
     path: '/line',
   },
   {
+    name: '阵列几何体',
+    path: '/arrayBox',
+  },
+  {
     name: '自定义面',
     path: '/rectangle',
   },
