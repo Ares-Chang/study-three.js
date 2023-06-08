@@ -24,6 +24,10 @@ const list = [
     name: '自定义面',
     path: '/rectangle',
   },
+  {
+    name: '贴图几何体',
+    path: '/textureBox',
+  },
 ]
 </script>
 
