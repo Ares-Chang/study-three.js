@@ -36,6 +36,10 @@ const list = [
     name: 'UV 动画',
     path: '/uvAnimation',
   },
+  {
+    name: 'GLTF 加载器',
+    path: '/GLTFLoader',
+  },
 ]
 </script>
 
