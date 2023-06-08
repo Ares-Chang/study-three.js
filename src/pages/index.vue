@@ -28,6 +28,10 @@ const list = [
     name: '贴图几何体',
     path: '/textureBox',
   },
+  {
+    name: '透明贴图',
+    path: '/transparencyTextureBox',
+  },
 ]
 </script>
 
