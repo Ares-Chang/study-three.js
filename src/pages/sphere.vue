@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { Mesh, MeshBasicMaterial, SphereGeometry } from 'three'
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 import LogicMap from '~/composables/logic'
 
 const three = ref()
 
 const map = new LogicMap()
+const gui = new GUI() // 创建 GUI 面板
+gui.add(map.controller, 'rander').name('渲染')
+
 onMounted(() => {
   map.initThree(three.value)
 
@@ -22,15 +26,15 @@ function addSphere() {
   sphere.position.set(2, 2, 0)
   map.scene.add(sphere)
 
-  const gui = map.gui.addFolder('球体')
-  gui.add(sphere.position, 'x', -3, 3, 0.01).name('X 轴')
-  gui.add({ scale: 0 }, 'scale', map.controller.scale)
+  const group = gui.addFolder('球体')
+  group.add(sphere.position, 'x', -3, 3, 0.01).name('X 轴')
+  group.add({ scale: 0 }, 'scale', map.controller.scale)
     .name('Y 轴')
     .onChange((value: number) => sphere.position.setY(value))
-  gui.add({ direction: 'right' }, 'direction', map.controller.direction)
+  group.add({ direction: 'right' }, 'direction', map.controller.direction)
     .name('方向选择')
     .onChange((value: number) => sphere.position.setX(value))
-  gui.addColor({ color: 0xFF0000 }, 'color')
+  group.addColor({ color: 0xFF0000 }, 'color')
     .name('颜色')
     .onChange((value: number) => {
       // 更新球体颜色

@@ -4,7 +4,6 @@ import {
   Scene, WebGLRenderer,
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 import Stats from 'three/addons/libs/stats.module.js'
 
 export default class LogicMap {
@@ -21,8 +20,6 @@ export default class LogicMap {
   controls = new OrbitControls(this.camera, this.renderer.domElement)
   // 创建辅助坐标系
   axesHelper = new AxesHelper(150)
-  // 创建 GUI 面板
-  gui = new GUI()
   // 创建性能监视器
   stats = new Stats()
 
@@ -39,7 +36,6 @@ export default class LogicMap {
   constructor() {
     this.render = this.render.bind(this) // 绑定 this
 
-    this.gui.add(this.controller, 'rander').name('渲染')
     document.body.appendChild(this.stats.dom) // 添加性能监视器
 
     watchEffect(() => {
